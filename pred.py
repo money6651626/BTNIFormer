@@ -32,13 +32,13 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="PyTorch Model Training", add_help=add_help)
     parser.add_argument("--dataset_name", default="WHU_CD")
     parser.add_argument('--net_G', default="BmmtNet_NAT_V7", help='initial learning rate for adam')
-    parser.add_argument("--data_path", default=r"F:\Pycharm_program\lunwen\datasets\CD_use", type=str, help="dataset path")
+    parser.add_argument("--data_path", default=r"datasets/CD_use", type=str, help="dataset path")
     parser.add_argument("--classes", default=2, type=int, help="model predict kind")
     parser.add_argument(
-        "-b", "--batch-size", default=4, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
+        "-b", "--batch-size", default=1, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
     parser.add_argument("--test_only", default=True, type=bool, help="just use the model to test")
-    parser.add_argument("--num_workers", default=4, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
-    parser.add_argument("--init_weight", default=r"E:\end_runs\weights\BmmtNet_NAT_V7\WHU_CD\best_ckpt.pth", type=str,
+    parser.add_argument("--num_workers", default=1, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
+    parser.add_argument("--init_weight", default=r"pretrain_weight/WHU_CD.pth", type=str,
                         help="the init model path of first epoch")
     parser.add_argument("--subdata", default=False, type=bool, help="sub datasets to test code")
     parser.add_argument('--loss', default='bce', type=str)
