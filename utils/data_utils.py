@@ -147,17 +147,8 @@ class CDDataAugmentation:
                 labels = [torch.from_numpy(np.array(img, np.uint8)).unsqueeze(dim=0)
                           for img in labels]
 
-            # if (self.data_name=="LEVIR_CD") and nomalize_spe:
-            #     imgs = [TF.normalize(img, mean=[0.398, 0.392, 0.335],
-            #                          std=[0.187, 0.178, 0.166]) for img in imgs]
-            # elif (self.data_name=="WHU_CD") and nomalize_spe:
-            #
-            #     imgs = [TF.normalize(img, mean=[0.491,0.470,0.431 ],
-            #                          std=[0.194,0.186,0.195]) for img in imgs]
-            # else:
             imgs = [TF.normalize(img, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) for img in imgs]
 
-            #imgs = [TF.normalize(img, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) for img in imgs]
 
         if self.time_exchange and random.random() > random_base:
             imgs.reverse()
