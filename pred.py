@@ -61,7 +61,7 @@ def main(args):
     # define model
 
 
-    model=define_G(args,init_type='normal', init_gain=0.02, gpu_ids=[0])
+    model=define_G(args,init_type='normal', init_gain=0.02, gpu_ids=[])
 
 
     if args.get_flops:
