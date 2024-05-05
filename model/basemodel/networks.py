@@ -482,50 +482,9 @@ class BASE_Transformer(ResNet):
 
 if __name__ == "__main__":
     model = CDFAModel(embed_dim=64).cuda()  # STA
-    #model = DSAMNet(n_class=2, backbone="resnet34").cuda()
-    #model = CDNet34(in_channels=3).cuda()  # DTCDSCN
-    #model = SiamUnet_diff(input_nbr=3, label_nbr=2).cuda()
-    #model = ChangeFormerV6(embed_dim=256).cuda()
-    #model = ChangeFormerV6_b2(embed_dim=64).cuda()
-    #model = BASE_Transformer(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4,with_pos='learned', enc_depth=1, dec_depth=8, decoder_dim_head=8).cuda()
-    #model = BmmtNetV6()
-
-    #model= BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",freature_cross_layer=[0, 1, 2, 3])
-    #model = BmmtNet_Res34()
-    #model=BmmtNet_segformer_b2()
-    #model = BmmtNet_segformer_b1()
-    # model = BmmtNetV7(exchange_type="and", exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",
-    #                 freature_cross_layer=[0, 1, 2, 3])
-    #
-    # model = BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="DINA",
-    #                 freature_cross_layer=[0, 1, 2, 3])
-    #
-    # model = BmmtNetV7(exchange_type="and", exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",
-    #                 freature_cross_layer=[])
-    #
-    # model= BmmtNetV7(exchange_type="single", exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",
-    #                 freature_cross_layer=[])
-    #
-    # model= BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="SA",
-    #                 freature_cross_layer=[0, 1, 2, 3])
-    #
-    # model = BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="DINA",
-    #                 freature_cross_layer=[1, 2, 3])
-
-
     model=model.cuda()
     dummy_input = torch.randn(1, 3, 256, 256).cuda()
 
-    # from natten.flops import add_natten_handle
-    #
-    # from natten.flops import get_flops
-    # flops=get_flops(model,(dummy_input,dummy_input))
-    # print(flops/ 10 ** 9)
-    #
-    # from natten.flops import FlopCountAnalysis as my_cal
-    # flop_ctr = my_cal(model, (dummy_input,dummy_input))
-    # flop_ctr = add_natten_handle(flop_ctr)
-    # print("FLOPs: ", flop_ctr.total() / 10 ** 9)
 
 
     def get_parameter_number(net):
@@ -548,35 +507,6 @@ if __name__ == "__main__":
     print('MACs: ', MACs, 'params: ', params)
     print('thop :MACs: %.2f G, params: %.2f M' % (MACs / 10 ** 9, params / 1000000.0))  # k（千）、M（百万）、G（十亿）、T（万亿）
 
-    #model(dummy_input,dummy_input)
 
-    """
-    print("--------------fvcore--------------")
-    from fvcore.nn import FlopCountAnalysis,flop_count_str
-    from natten.flops import add_natten_handle
-
-    # ...
-
-    flop_ctr = FlopCountAnalysis(model, (dummy_input,dummy_input))
-
-    print(flop_count_str(flop_ctr))
-    #flop_ctr = add_natten_handle(flop_ctr)
-    print(flop_ctr.total())
-    # 分析parameters
-    #print(parameter_count_table(model))
-    """
-
-    print("--------------ptflops--------------")
-    #ptflops:
-    # from ptflops import get_model_complexity_info
-    # def prepare_input(resolution):
-    #     x1 = torch.FloatTensor(1, *resolution).cuda()
-    #     x2 = torch.FloatTensor(1, *resolution).cuda()
-    #     return dict(x1=x1,x2= x2)
-    #
-    # macs, params = get_model_complexity_info(model, (3,256,256), as_strings=True,
-    #                                          print_per_layer_stat=True, verbose=True,input_constructor=prepare_input)
-    # print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
-    # print('{:<30}  {:<8}'.format('Number of parameters: ', params))
 
 

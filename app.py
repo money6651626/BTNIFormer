@@ -6,9 +6,12 @@ import torch
 from torchvision import transforms
 from PIL import Image
 import logging
+from model.BMMTNet import BmmtNetV7
 
-model = torchvision.models.resnet18(pretrained=True)  # 数量对不上
-# model = torch.load('resnet_trained_troch_saved')
+model = BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",
+                        freature_cross_layer=[0, 1, 2, 3])
+#model = torchvision.models.resnet18(pretrained=True)  # 数量对不上
+
 
 
 app = Flask(__name__)
@@ -25,8 +28,7 @@ def allowed_file(filename):
 
 
 def MyPredict(image_path):
-    label_list = ['Biological', 'Fibres', 'Films_Coated_Surface', 'MEMS_devices_and_electrodes', 'Nanowires',
-                  'Particles', 'Patterned_surface', 'Porous_Sponge', 'Powder', 'Tips']
+
     # Your data transformation
     normal_transforms = transforms.Compose([
         transforms.Resize(256),
