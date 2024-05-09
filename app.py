@@ -7,9 +7,12 @@ from torchvision import transforms
 from PIL import Image
 import logging
 from model.BMMTNet import BmmtNetV7
+import numpy as np
 
 model = BmmtNetV7(exchange_type=None, exchange_layer=[0, 1, 2, 3], feature_cross_type="NA",
                         freature_cross_layer=[0, 1, 2, 3])
+checkpoint = torch.load("pretrain_weight/WHU_CD.pth", map_location="cpu")
+model.load_state_dict(checkpoint["model"])
 #model = torchvision.models.resnet18(pretrained=True)  # 数量对不上
 
 
@@ -27,34 +30,30 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def MyPredict(image_path):
+def MyPredict(image_path_1,image_path_2):
 
     # Your data transformation
     normal_transforms = transforms.Compose([
         transforms.Resize(256),
-        transforms.CenterCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
     ])
 
     model.eval()
     # Load and transform the single image
 
-    image = Image.open(image_path)
-    input_image = normal_transforms(image)
-    input_image = input_image.unsqueeze(0)  # Add a batch dimension
-
+    image1 = Image.open(image_path_1).convert('RGB')
+    input_image1 = normal_transforms(image1).unsqueeze(0)
+    image2= Image.open(image_path_2).convert('RGB')
+    input_image2 = normal_transforms(image2).unsqueeze(0)
     # Make prediction
     with torch.no_grad():
-        output = model(input_image)
+        output = model(input_image1,input_image2)
 
     # Get the predicted label
-    _, predicted_label = torch.max(output, 1)
-    ##print(f"Predicted label:  {label_list[predicted_label.item()]}")
+    pred_out = torch.argmax(output,dim=1)
 
-    # return label_list[predicted_label.item()]
-
-    return predicted_label.item()
+    return pred_out*255
 
 
 @app.route('/')
@@ -91,11 +90,16 @@ def upload_file():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'],"B", filename2)
         file2.save(file_path)
         use_images.append(filename2)
-    result = MyPredict(os.path.join(app.config['UPLOAD_FOLDER'],"A",use_images[0]))
+
+    result = MyPredict(os.path.join(app.config['UPLOAD_FOLDER'],"A",use_images[0]),os.path.join(app.config['UPLOAD_FOLDER'],"B",use_images[1]))
+    result_np=result.permute(1, 2, 0).numpy().astype(np.uint8)
 
     result_path=os.path.join(app.config['UPLOAD_FOLDER'],"out",filename1)
-    result.save(result_path)
-    return render_template('index.html', filenames= use_images, result=result)
+    im = Image.fromarray(np.squeeze(result_np))#灰度图是（h,w）
+    im.save(result_path)
+
+
+    return render_template('index.html', filenames= use_images, result= result_path)
 
 
 @app.route('/uploads/<filename>')  # uploads/L6_00f153d186dbf5fa02e0558e47537fde.jpg
