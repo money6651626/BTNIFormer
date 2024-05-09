@@ -3,10 +3,7 @@ import cv2
 import numpy as np
 import os
 import torch
-import torch.nn.functional as F
-import torchvision.transforms
 from PIL import Image
-import random
 from utils.data_utils import CDDataAugmentation
 from torch.utils.data import DataLoader
 
@@ -116,6 +113,7 @@ def get_dataloader(args):
     if args.subdata:
         train_dataset = sub_test_data(train_dataset, expansion=0.1)
         val_dataset = sub_test_data(val_dataset, expansion=0.1)
+        test_dataset = sub_test_data(val_dataset, expansion=0.05)
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=args.batch_size,
                                    shuffle=True,

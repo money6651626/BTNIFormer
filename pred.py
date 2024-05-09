@@ -1,17 +1,14 @@
 # coding=utf-8
 import os
 import random
-
 import numpy as np
 import torch
 import torch.nn as nn
-
+from model.BMMTNet import BmmtNetV7
 from model.basemodel.networks import define_G
 from utils.data_trans import get_dataloader
-from utils.evaluate import log_eva
-from utils.losses import BCL, DiceLoss, cross_entropy
-from utils.val_model import val_one_epoch,val_one_epoch_test,val_one_epoch_Tiny_CD
-from utils.val_model import val_one_epoch_DSAMNet,val_one_epoch_STA
+from utils.val_model import val_one_epoch
+
 
 
 def seed_torch(seed=2023):
@@ -40,7 +37,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--num_workers", default=1, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
     parser.add_argument("--init_weight", default=r"pretrain_weight/WHU_CD.pth", type=str,
                         help="the init model path of first epoch")
-    parser.add_argument("--subdata", default=False, type=bool, help="sub datasets to test code")
+    parser.add_argument("--subdata", default=True, type=bool, help="sub datasets to test code")
     parser.add_argument("--one_hot_flag", default=True, type=bool, help="some loss need one-hot trans")
     parser.add_argument('--embed_dim', default=64, type=int)
     parser.add_argument('--wDice', default=0.1, type=float)
@@ -50,7 +47,7 @@ def get_args_parser(add_help=True):
 
 def main(args):
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cpu"#"cuda" if torch.cuda.is_available() else "cpu"
     print("Using {} device evaling.".format(device))
 
     test_data_loader = get_dataloader(args)
@@ -59,7 +56,7 @@ def main(args):
     model=define_G(args,init_type='normal', init_gain=0.02, gpu_ids=[0])
 
     if args.init_weight :
-        checkpoint = torch.load(args.init_weight, map_location="cpu")
+        checkpoint = torch.load(args.init_weight, map_location=device)
         model.load_state_dict(checkpoint["model"])
     else:
         pass

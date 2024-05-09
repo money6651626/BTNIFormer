@@ -36,7 +36,7 @@ def val_one_epoch( model,  criterion, device, dataloader_val,args):
     model.eval()
     with torch.no_grad():
         for b_A, b_B, label,_ in tqdm(dataloader_val):
-            pred = model(b_A.cuda(), b_B.cuda())
+            pred = model(b_A.to(device), b_B.to(device))
 
             loss = criterion(pred, label.to(device).float())
 
